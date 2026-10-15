@@ -1,5 +1,7 @@
 //! Operations that can appear in a dataflow graph.
 
+use std::time::Duration;
+
 /// Identifies a function used by a [`Op::Map`], [`Op::Filter`], or
 /// [`Op::PartitionedGroupReduce`].
 pub type FnId = usize;
