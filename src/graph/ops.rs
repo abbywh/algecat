@@ -3,7 +3,7 @@
 use std::time::Duration;
 
 /// Identifies a function used by a [`Op::Map`], [`Op::Filter`], or
-/// [`Op::PartitionedGroupReduce`].
+/// [`Op::GroupReduce`].
 pub type FnId = usize;
 
 /// Identifies an aggregation used by a reduce operation.
@@ -16,16 +16,19 @@ pub type SourceId = usize;
 pub type DepId = usize;
 
 /// Identifies a field selected from a source/map
-pub type FiledId = usize;
+pub type FieldId = usize;
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WindowSpec {
-    size: Duration, // how big the window is
-    step: Duration, // how often we update the window
-    strategy: WindowStrategy,
+    pub size: Duration, // how big the window is
+    pub step: Duration, // how often we update the window
+    pub strategy: WindowStrategy,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum WindowStrategy {
-    SAWTOOTH, HOPPING, // pitc kind of sucks so maybe lets leave it out
+    Sawtooth,
+    Hopping, // PITC kind of sucks, so maybe let's leave it out.
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -36,7 +39,12 @@ pub enum Op {
     /// Reduces all input rows with an associative aggregation.
     Reduce { agg: AggId },
     /// Groups input rows by `key`, then aggregates each group.
-    GroupReduce { key: Vec<FieldId>, agg: Vec<AggId>, time: FiledId, window_spec: WindowSpec },
+    GroupReduce {
+        key: Vec<FieldId>,
+        agg: Vec<AggId>,
+        time: FieldId,
+        window_spec: WindowSpec,
+    },
 
     // TODO support external
 
